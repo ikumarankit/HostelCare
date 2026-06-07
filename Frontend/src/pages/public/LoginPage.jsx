@@ -68,10 +68,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
         <div className="relative z-10 flex flex-col justify-between p-12 xl:p-16 w-full">
           <div>
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary-500 shadow-lg shadow-primary-500/30 mb-8">
-              <HiOutlineBuildingOffice2 className="w-6 h-6 text-white" />
-            </div>
-            <h2 className="text-3xl xl:text-4xl font-bold tracking-tight leading-tight">
+            <h2 className="pt-50 text-3xl xl:text-4xl font-bold tracking-tight leading-tight">
               Report hostel issues.<br />
               <span className="text-primary-300">Track until resolved.</span>
             </h2>
@@ -92,21 +89,11 @@ export default function LoginPage() {
         <div className="w-full max-w-md animate-slide-up">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-dark-500 hover:text-primary-600 dark:text-dark-400 dark:hover:text-primary-400 mb-8 transition-colors"
+            className="sm:pt-4 md:pt-6 lg:pt-8 xl:pt-10 inline-flex items-center gap-1.5 text-sm font-medium text-dark-500 hover:text-primary-600 dark:text-dark-400 dark:hover:text-primary-400 mb-8 transition-colors"
           >
             <HiOutlineArrowLeft className="w-4 h-4" />
             Back to home
           </Link>
-
-          <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="w-11 h-11 rounded-xl bg-primary-600 flex items-center justify-center shadow-md">
-              <HiOutlineBuildingOffice2 className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-dark-900 dark:text-white">Hostel Care</h1>
-              <p className="text-xs text-dark-500 dark:text-dark-400">Complaint management</p>
-            </div>
-          </div>
 
           <h1 className="text-2xl font-bold text-dark-900 dark:text-white tracking-tight">Sign in</h1>
           <p className="text-sm text-dark-500 dark:text-dark-400 mt-1 mb-8">
