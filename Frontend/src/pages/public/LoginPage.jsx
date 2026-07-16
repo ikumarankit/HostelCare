@@ -11,9 +11,61 @@ import {
   HiOutlineBuildingOffice2,
   HiOutlineDevicePhoneMobile,
   HiOutlineArrowLeft,
+  HiOutlineAcademicCap,
+  HiOutlineShieldCheck,
+  HiOutlineCog6Tooth,
+  HiOutlineBolt,
 } from 'react-icons/hi2';
 
 const roleLabels = { student: 'Student', warden: 'Warden', admin: 'Admin' };
+
+const demoAccounts = [
+  {
+    role: 'student',
+    label: 'Student',
+    email: 'arjun@hostel.edu',
+    password: 'hostel123',
+    name: 'Arjun Sharma',
+    description: 'Room 204, Floor 2',
+    icon: HiOutlineAcademicCap,
+    gradient: 'from-blue-500 to-cyan-400',
+    bgGlow: 'bg-blue-500/10 dark:bg-blue-500/5',
+    borderColor: 'border-blue-200 dark:border-blue-800/40',
+    hoverBorder: 'hover:border-blue-400 dark:hover:border-blue-600',
+    textColor: 'text-blue-700 dark:text-blue-400',
+    iconBg: 'bg-blue-100 dark:bg-blue-900/30',
+  },
+  {
+    role: 'warden',
+    label: 'Warden',
+    email: 'warden@hostel.edu',
+    password: 'hostel123',
+    name: 'Mr. Rajendra Mishra',
+    description: 'Floors 1–3',
+    icon: HiOutlineShieldCheck,
+    gradient: 'from-amber-500 to-orange-400',
+    bgGlow: 'bg-amber-500/10 dark:bg-amber-500/5',
+    borderColor: 'border-amber-200 dark:border-amber-800/40',
+    hoverBorder: 'hover:border-amber-400 dark:hover:border-amber-600',
+    textColor: 'text-amber-700 dark:text-amber-400',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/30',
+  },
+  {
+    role: 'admin',
+    label: 'Admin',
+    email: 'admin@hostel.edu',
+    password: 'hostel123',
+    name: 'Dr. Suresh Iyer',
+    description: 'Full system access',
+    icon: HiOutlineCog6Tooth,
+    gradient: 'from-violet-500 to-purple-400',
+    bgGlow: 'bg-violet-500/10 dark:bg-violet-500/5',
+    borderColor: 'border-violet-200 dark:border-violet-800/40',
+    hoverBorder: 'hover:border-violet-400 dark:hover:border-violet-600',
+    textColor: 'text-violet-700 dark:text-violet-400',
+    iconBg: 'bg-violet-100 dark:bg-violet-900/30',
+  },
+];
 
 export default function LoginPage() {
   const [loginMethod, setLoginMethod] = useState('email');
@@ -21,6 +73,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('student');
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetContact, setResetContact] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
@@ -43,6 +96,19 @@ export default function LoginPage() {
       toast.error('Invalid credentials. Check your details and role.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDemoLogin = async (account) => {
+    setDemoLoading(account.role);
+    try {
+      const data = await login(account.email, account.password, account.role);
+      toast.success(`Welcome, ${data.user.name}! (Demo ${account.label})`);
+      navigate(`/${data.user.role}/dashboard`);
+    } catch {
+      toast.error(`Demo login failed. Make sure the backend is running and seeded.`);
+    } finally {
+      setDemoLoading(null);
     }
   };
 
@@ -69,17 +135,17 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col justify-between p-12 xl:p-16 w-full">
           <div>
             <h2 className="pt-50 text-3xl xl:text-4xl font-bold tracking-tight leading-tight">
-              Report hostel issues.<br />
-              <span className="text-primary-300">Track until resolved.</span>
+              Got a hostel problem?<br />
+              <span className="text-primary-300">We'll help fix it.</span>
             </h2>
             <p className="mt-5 text-slate-400 text-base leading-relaxed max-w-md">
-              Students raise maintenance complaints by room and category. Wardens manage one or more floors and update status as work completes.
+              Students report problems like broken fans or dirty rooms. Wardens see the complaints and fix them. You can track everything from start to finish.
             </p>
           </div>
           <ul className="space-y-4 text-sm text-slate-400">
-            <li className="flex gap-3"><span className="text-primary-400 font-semibold">01</span> Submit with category, priority, and description</li>
-            <li className="flex gap-3"><span className="text-primary-400 font-semibold">02</span> Warden reviews complaints for assigned floors</li>
-            <li className="flex gap-3"><span className="text-primary-400 font-semibold">03</span> Follow status from pending to resolved</li>
+            <li className="flex gap-3"><span className="text-primary-400 font-semibold">01</span> Tell us what's broken and where</li>
+            <li className="flex gap-3"><span className="text-primary-400 font-semibold">02</span> Your warden gets notified right away</li>
+            <li className="flex gap-3"><span className="text-primary-400 font-semibold">03</span> Track the fix until it's done</li>
           </ul>
         </div>
       </div>
@@ -97,7 +163,7 @@ export default function LoginPage() {
 
           <h1 className="text-2xl font-bold text-dark-900 dark:text-white tracking-tight">Sign in</h1>
           <p className="text-sm text-dark-500 dark:text-dark-400 mt-1 mb-8">
-            Use your institutional email or registered mobile number.
+            Enter your college email or mobile number to log in.
           </p>
 
           <div className="bg-white dark:bg-dark-900 rounded-2xl border border-slate-200 dark:border-dark-700 shadow-sm p-6 sm:p-8">
@@ -180,6 +246,35 @@ export default function LoginPage() {
               <Button type="submit" loading={loading} className="w-full" size="lg">
                 Login
               </Button>
+
+              {/* ── Quick Demo Login ── */}
+              <div className="pt-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-px flex-1 bg-slate-200 dark:bg-dark-700" />
+                  <span className="text-[10px] font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider">Demo Login</span>
+                  <div className="h-px flex-1 bg-slate-200 dark:bg-dark-700" />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  {demoAccounts.map((account) => {
+                    const isLoading = demoLoading === account.role;
+                    return (
+                      <button
+                        key={account.role}
+                        id={`demo-login-${account.role}`}
+                        type="button"
+                        disabled={demoLoading !== null}
+                        onClick={() => handleDemoLogin(account)}
+                        className={`py-2.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer
+                          ${account.borderColor} ${account.hoverBorder} ${account.textColor}
+                          disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        {isLoading ? 'Logging in…' : account.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </form>
           </div>
         </div>

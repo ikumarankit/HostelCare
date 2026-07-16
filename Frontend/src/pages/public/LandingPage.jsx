@@ -16,24 +16,24 @@ import {
 } from 'react-icons/hi2';
 
 const features = [
-  { icon: HiOutlineBoltSlash, title: 'Electricity', desc: 'Fans, lights, sockets, and wiring faults.' },
-  { icon: HiOutlineWrenchScrewdriver, title: 'Furniture', desc: 'Chairs, tables, cupboards, and beds.' },
-  { icon: HiOutlineSparkles, title: 'Cleaning', desc: 'Room and corridor hygiene issues.' },
-  { icon: HiOutlineBeaker, title: 'Water & plumbing', desc: 'Leaks, pressure, and blocked drains.' },
-  { icon: HiOutlineSignal, title: 'Wi‑Fi', desc: 'Connectivity and speed problems.' },
-  { icon: HiOutlineShieldCheck, title: 'Washroom', desc: 'Fixtures, tiles, and geysers.' },
+  { icon: HiOutlineBoltSlash, title: 'Electricity', desc: 'Fans not working, lights out, or broken sockets.' },
+  { icon: HiOutlineWrenchScrewdriver, title: 'Furniture', desc: 'Broken chairs, tables, cupboards, or beds.' },
+  { icon: HiOutlineSparkles, title: 'Cleaning', desc: 'Dirty rooms, corridors, or common areas.' },
+  { icon: HiOutlineBeaker, title: 'Water & Plumbing', desc: 'Water leaks, low pressure, or blocked drains.' },
+  { icon: HiOutlineSignal, title: 'Wi‑Fi', desc: 'Internet not working or too slow.' },
+  { icon: HiOutlineShieldCheck, title: 'Washroom', desc: 'Broken taps, tiles, or geyser not working.' },
 ];
 
 const steps = [
-  { num: '1', title: 'Report the issue', desc: 'Students submit complaints with category, room, floor, and priority.' },
-  { num: '2', title: 'Warden takes charge', desc: 'Each warden handles complaints for their assigned floor or floors.' },
-  { num: '3', title: 'Track to resolution', desc: 'Status moves from pending through in-progress to resolved with notes.' },
+  { num: '1', title: 'Report your problem', desc: 'Tell us what\'s wrong — pick the type, your room number, and how urgent it is.' },
+  { num: '2', title: 'Warden looks into it', desc: 'Your floor warden sees the complaint and starts working on it.' },
+  { num: '3', title: 'Problem gets fixed', desc: 'You can check the status anytime — from pending to in-progress to done.' },
 ];
 
 const highlights = [
-  { icon: HiOutlineClipboardDocumentCheck, title: 'Structured complaints', desc: 'Categories and priorities keep maintenance organized.' },
-  { icon: HiOutlineBellAlert, title: 'Clear accountability', desc: 'Wardens update status and notes so students know what is happening.' },
-  { icon: HiOutlineChartBar, title: 'Admin oversight', desc: 'Administrators monitor trends and manage users across the hostel.' },
+  { icon: HiOutlineClipboardDocumentCheck, title: 'Everything organized', desc: 'Each complaint is sorted by type and priority so nothing gets lost.' },
+  { icon: HiOutlineBellAlert, title: 'Always know what\'s happening', desc: 'Wardens update the status so you can see when your issue will be fixed.' },
+  { icon: HiOutlineChartBar, title: 'Admin keeps things running', desc: 'Admins can see all complaints, manage users, and check what needs attention.' },
 ];
 
 export default function LandingPage() {
@@ -55,14 +55,14 @@ export default function LandingPage() {
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-800 dark:text-primary-300 text-xs font-semibold uppercase tracking-wide mb-6">
               <HiOutlineBuildingOffice2 className="w-3.5 h-3.5" />
-              Hostel complaint system
+              Hostel complaint & repair system
             </p>
             <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-6">
-              Maintenance requests,{' '}
-              <span className="text-primary-600 dark:text-primary-400">handled by floor.</span>
+              Something broken in your hostel?{' '}
+              <span className="text-primary-600 dark:text-primary-400">Report it here.</span>
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed mb-10">
-              Hostel Care connects students, wardens, and administrators. Report room issues digitally; wardens manage one or multiple floors and close the loop with status updates.
+              Hostel Care lets you report hostel problems like broken fans, dirty rooms, or water leaks. Your warden gets notified and fixes it. You can track the progress until it's done.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -84,9 +84,9 @@ export default function LandingPage() {
           {/* Role cards */}
           <div className="mt-16 grid sm:grid-cols-3 gap-4">
             {[
-              { icon: HiOutlineHomeModern, title: 'Students', desc: 'File and track complaints for your room and floor.' },
-              { icon: HiOutlineUserGroup, title: 'Wardens', desc: 'Review and resolve issues for assigned floors only—or several.' },
-              { icon: HiOutlineChartBar, title: 'Administrators', desc: 'User management, analytics, and hostel-wide visibility.' },
+              { icon: HiOutlineHomeModern, title: 'Students', desc: 'Report problems in your room and check if they\'re being fixed.' },
+              { icon: HiOutlineUserGroup, title: 'Wardens', desc: 'See complaints from your floors and update when they\'re fixed.' },
+              { icon: HiOutlineChartBar, title: 'Administrators', desc: 'Manage all users, view reports, and keep the hostel running smoothly.' },
             ].map((card) => (
               <div
                 key={card.title}
@@ -106,8 +106,8 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <p className="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-2">Categories</p>
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">What you can report</h2>
-            <p className="text-slate-600 dark:text-slate-400 mt-2 max-w-xl">Common hostel maintenance areas—each routed to the warden responsible for your floor.</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">What kind of problems can you report?</h2>
+            <p className="text-slate-600 dark:text-slate-400 mt-2 max-w-xl">Pick a category when you file a complaint — your floor warden will handle it from there.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {features.map((f) => (
@@ -132,8 +132,8 @@ export default function LandingPage() {
       <section id="how-it-works" className="py-20 bg-slate-50 dark:bg-dark-950">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-2">Workflow</p>
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">How Hostel Care works</h2>
+            <p className="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-2">Simple steps</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">How does it work?</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((s) => (
@@ -162,9 +162,9 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="py-20 bg-slate-900 dark:bg-dark-900">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white tracking-tight mb-4">Ready to sign in?</h2>
+          <h2 className="text-3xl font-bold text-white tracking-tight mb-4">Ready to get started?</h2>
           <p className="text-slate-400 mb-8">
-            Students, wardens, and admins each use the same portal with role-based dashboards.
+            Log in as a student, warden, or admin — each gets their own dashboard.
           </p>
           <Link
             to="/login"
