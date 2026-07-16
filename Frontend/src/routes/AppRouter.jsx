@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 // Layouts
 import PublicLayout from '../layouts/PublicLayout';
+import MinimalLayout from '../layouts/MinimalLayout';
 import DashboardLayout from '../layouts/DashboardLayout';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -34,6 +35,10 @@ export default function AppRouter() {
         {/* Public Routes */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={isAuthenticated ? <Navigate to={`/${user?.role}/dashboard`} /> : <LandingPage />} />
+        </Route>
+
+        {/* Login page — minimal navbar (logo + theme toggle only) */}
+        <Route element={<MinimalLayout />}>
           <Route path="/login" element={isAuthenticated ? <Navigate to={`/${user?.role}/dashboard`} /> : <LoginPage />} />
         </Route>
 

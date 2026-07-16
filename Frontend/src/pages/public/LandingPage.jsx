@@ -16,16 +16,16 @@ import {
 } from 'react-icons/hi2';
 
 const features = [
-  { icon: HiOutlineBoltSlash, title: 'Electricity', desc: 'Fans not working, lights out, or broken sockets.' },
-  { icon: HiOutlineWrenchScrewdriver, title: 'Furniture', desc: 'Broken chairs, tables, cupboards, or beds.' },
-  { icon: HiOutlineSparkles, title: 'Cleaning', desc: 'Dirty rooms, corridors, or common areas.' },
-  { icon: HiOutlineBeaker, title: 'Water & Plumbing', desc: 'Water leaks, low pressure, or blocked drains.' },
+  { icon: HiOutlineBoltSlash, title: 'Electricity', desc: 'Fans or lights not working, sockets not working.' },
+  { icon: HiOutlineWrenchScrewdriver, title: 'Furniture', desc: 'Broken chairs, study-tables, cupboards, or beds.' },
+  { icon: HiOutlineSparkles, title: 'Cleaning', desc: 'Dirty rooms or washroom' },
+  { icon: HiOutlineBeaker, title: 'Water & Plumbing', desc: 'Water leaks or low pressure water' },
   { icon: HiOutlineSignal, title: 'Wi‑Fi', desc: 'Internet not working or too slow.' },
   { icon: HiOutlineShieldCheck, title: 'Washroom', desc: 'Broken taps, tiles, or geyser not working.' },
 ];
 
 const steps = [
-  { num: '1', title: 'Report your problem', desc: 'Tell us what\'s wrong — pick the type, your room number, and how urgent it is.' },
+  { num: '1', title: 'Report your room problem', desc: 'Tell us what\'s wrong — pick the type, your room number, and how urgent it is.' },
   { num: '2', title: 'Warden looks into it', desc: 'Your floor warden sees the complaint and starts working on it.' },
   { num: '3', title: 'Problem gets fixed', desc: 'You can check the status anytime — from pending to in-progress to done.' },
 ];
@@ -39,7 +39,7 @@ const highlights = [
 export default function LandingPage() {
   return (
     <div className="overflow-x-hidden">
-      {/* Hero */}
+      {/* Hero of landing page */}
       <section className="relative pt-24 pb-20 lg:pt-32 lg:pb-28">
         <div className="absolute inset-0 bg-slate-50 dark:bg-dark-950" />
         <div
@@ -55,14 +55,14 @@ export default function LandingPage() {
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-800 dark:text-primary-300 text-xs font-semibold uppercase tracking-wide mb-6">
               <HiOutlineBuildingOffice2 className="w-3.5 h-3.5" />
-              Hostel complaint & repair system
+              Hostel Issue Management System
             </p>
             <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-6">
-              Something broken in your hostel?{' '}
-              <span className="text-primary-600 dark:text-primary-400">Report it here.</span>
+              Having issues with your hostel room?{' '}
+              <span className="text-primary-600 dark:text-primary-400">Report them here and track their status.</span>
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed mb-10">
-              Hostel Care lets you report hostel problems like broken fans, dirty rooms, or water leaks. Your warden gets notified and fixes it. You can track the progress until it's done.
+              HostelCare lets you report hostel problems like Electricity, Furniture, Wifi, etc. Your warden gets notified and fixes it. You can track the progress of your complaint until it's resolve.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -81,12 +81,14 @@ export default function LandingPage() {
             </div>
           </div>
 
+
+
           {/* Role cards */}
           <div className="mt-16 grid sm:grid-cols-3 gap-4">
             {[
-              { icon: HiOutlineHomeModern, title: 'Students', desc: 'Report problems in your room and check if they\'re being fixed.' },
-              { icon: HiOutlineUserGroup, title: 'Wardens', desc: 'See complaints from your floors and update when they\'re fixed.' },
-              { icon: HiOutlineChartBar, title: 'Administrators', desc: 'Manage all users, view reports, and keep the hostel running smoothly.' },
+              { icon: HiOutlineHomeModern, title: 'Students', desc: 'Report problems of their room and check the status of reported problem.' },
+              { icon: HiOutlineUserGroup, title: 'Wardens', desc: 'See complaints of their assign floors and update the status of the problem.' },
+              { icon: HiOutlineChartBar, title: 'Admin', desc: 'Manage all students, wardens and view reports, and keep the system running smoothly.' },
             ].map((card) => (
               <div
                 key={card.title}
@@ -101,13 +103,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features */}
+
+
+      {/* Features or Categories*/}
       <section id="features" className="py-20 bg-white dark:bg-dark-900 border-y border-slate-200 dark:border-dark-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <p className="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-2">Categories</p>
             <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">What kind of problems can you report?</h2>
-            <p className="text-slate-600 dark:text-slate-400 mt-2 max-w-xl">Pick a category when you file a complaint — your floor warden will handle it from there.</p>
+            <p className="text-slate-600 dark:text-slate-400 mt-2 max-w-xl">Pick a category when you file a complaint — your floor warden will solve it.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {features.map((f) => (
@@ -128,6 +132,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+
+
       {/* How it works */}
       <section id="how-it-works" className="py-20 bg-slate-50 dark:bg-dark-950">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -146,25 +152,15 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-
-          <div className="mt-16 grid md:grid-cols-3 gap-6">
-            {highlights.map((h) => (
-              <div key={h.title} className="p-6 rounded-2xl bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-700">
-                <h.icon className="w-7 h-7 text-primary-600 dark:text-primary-400 mb-3" />
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{h.title}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{h.desc}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* CTA */}
+      {/* CTA or login direct page*/}
       <section className="py-20 bg-slate-900 dark:bg-dark-900">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white tracking-tight mb-4">Ready to get started?</h2>
           <p className="text-slate-400 mb-8">
-            Log in as a student, warden, or admin — each gets their own dashboard.
+            Log in as a student, warden, or admin —
           </p>
           <Link
             to="/login"

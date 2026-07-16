@@ -56,7 +56,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <HiOutlineBuildingOffice2 className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-dark-900 dark:text-white leading-tight">HOSTEL CARE</h1>
+              <h1 className="text-base font-bold text-dark-900 dark:text-white leading-tight">HostelCare</h1>
               <p className="text-[10px] text-dark-400 font-medium tracking-wider uppercase">Management</p>
             </div>
           </div>

@@ -19,8 +19,8 @@ export default function PublicLayout() {
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-white/95 dark:bg-dark-900/95 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-dark-700'
-            : 'bg-transparent'
+            ? 'bg-white/95 dark:bg-dark-900/85 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-dark-700'
+            : 'bg-white/95 dark:bg-dark-900/0 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-dark-700'
         }`}
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,7 +29,7 @@ export default function PublicLayout() {
               <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center">
                 <HiOutlineBuildingOffice2 className="w-5 h-5 text-white" />
               </div>
-              <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Hostel Care</span>
+              <span className="text-lg font-semibold text-slate-900 dark:text-white tracking-tight">HostelCare</span>
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
@@ -105,9 +105,13 @@ export default function PublicLayout() {
         )}
       </nav>
 
+
+
       <main className="flex-1">
         <Outlet />
       </main>
+
+
 
       <footer className="bg-slate-900 dark:bg-dark-950 border-t border-slate-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -117,10 +121,10 @@ export default function PublicLayout() {
                 <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center">
                   <HiOutlineBuildingOffice2 className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-lg font-bold text-white">Hostel Care</span>
+                <span className="text-lg font-semibold text-white">HostelCare</span>
               </div>
               <p className="text-slate-400 text-sm max-w-md leading-relaxed">
-                Digital complaint management for hostels. Students report issues; wardens resolve them floor by floor.
+                Hostel Issue Management System. <br /> Students report issues; wardens resolve them floor by floor.
               </p>
             </div>
             <div>
@@ -145,7 +149,7 @@ export default function PublicLayout() {
             </div>
           </div>
           <div className="mt-10 pt-6 border-t border-slate-800 text-center">
-            <p className="text-sm text-slate-500">© {new Date().getFullYear()} Hostel Care. All rights reserved.</p>
+            <p className="text-sm text-slate-500">© {new Date().getFullYear()} HostelCare. All rights reserved ( :</p>
           </div>
         </div>
       </footer>
