@@ -90,6 +90,10 @@ export const updateUser = asyncHandler(async (req, res) => {
 });
 
 export const updateProfile = asyncHandler(async (req, res) => {
+  if (req.user.role === 'student' || req.user.role === 'warden') {
+    throw new AppError('You cannot edit your own profile. Contact admin for changes.', 403);
+  }
+
   const { name, phone, room } = req.body;
   const user = req.user;
 

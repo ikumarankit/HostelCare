@@ -130,3 +130,21 @@ export const updateComplaintStatus = asyncHandler(async (req, res) => {
   const updated = await findComplaintByParamPopulated(complaint.complaintId);
   res.json({ success: true, data: formatComplaint(updated) });
 });
+
+export const deleteComplaint = asyncHandler(async (req, res) => {
+  const complaint = await findComplaintByParam(req.params.id);
+
+  if (!complaint) throw new AppError('Complaint not found', 404);
+
+  if (req.user.role !== 'student' || complaint.studentId.toString() !== req.user._id.toString()) {
+    throw new AppError('Only the student who created this complaint can delete it', 403);
+  }
+
+  if (complaint.status !== 'pending') {
+    throw new AppError('Only pending complaints can be deleted', 400);
+  }
+
+  await complaint.deleteOne();
+
+  res.json({ success: true, message: 'Complaint deleted successfully' });
+});

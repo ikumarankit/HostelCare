@@ -20,6 +20,7 @@ import StudentProfile from '../pages/student/StudentProfile';
 // Warden Pages
 import WardenDashboard from '../pages/warden/WardenDashboard';
 import ComplaintManagement from '../pages/warden/ComplaintManagement';
+import WardenProfile from '../pages/warden/WardenProfile';
 
 // Admin Pages
 import AdminDashboard from '../pages/admin/AdminDashboard';
@@ -54,6 +55,7 @@ export default function AppRouter() {
         <Route element={<ProtectedRoute allowedRoles={['warden']}><DashboardLayout /></ProtectedRoute>}>
           <Route path="/warden/dashboard" element={<WardenDashboard />} />
           <Route path="/warden/complaints" element={<ComplaintManagement />} />
+          <Route path="/warden/profile" element={<WardenProfile />} />
         </Route>
 
         {/* Admin Routes */}

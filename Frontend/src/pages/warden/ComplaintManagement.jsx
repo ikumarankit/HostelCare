@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { complaintService } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Card } from '../../components/ui/Card';
@@ -20,6 +20,8 @@ export default function ComplaintManagement() {
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [modalType, setModalType] = useState(null); // 'status' | 'notes'
   const [formData, setFormData] = useState({ status: '', notes: '' });
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef(null);
 
   const { user } = useAuth();
 
@@ -41,6 +43,17 @@ export default function ComplaintManagement() {
     };
     fetchData();
   }, [user]);
+
+  // Close filter dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const openModal = (complaint, type) => {
     setSelectedComplaint(complaint);
@@ -93,15 +106,45 @@ export default function ComplaintManagement() {
           <input type="text" placeholder="Search by title, ID, or student..." value={search} onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-dark-300 dark:border-dark-600 bg-white dark:bg-dark-800 text-sm text-dark-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500 transition-all" />
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <HiOutlineFunnel className="w-4 h-4 text-dark-400 flex-shrink-0" />
-          {['all', 'pending', 'in-progress', 'resolved', 'rejected'].map((s) => (
-            <button key={s} onClick={() => setStatusFilter(s)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer capitalize
-                ${statusFilter === s ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400' : 'text-dark-500 hover:bg-dark-100 dark:hover:bg-dark-700'}`}>
-              {s === 'all' ? 'All' : s === 'in-progress' ? 'In Progress' : s}
-            </button>
-          ))}
+        <div className="relative" ref={filterRef}>
+          <button
+            onClick={() => setFilterOpen((prev) => !prev)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all cursor-pointer
+              ${statusFilter !== 'all'
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-500/50'
+                : 'border-dark-300 dark:border-dark-600 text-dark-500 dark:text-dark-400 hover:bg-dark-50 dark:hover:bg-dark-700'
+              }`}
+          >
+            <HiOutlineFunnel className="w-4 h-4" />
+            <span>{statusFilter === 'all' ? 'Filter' : statusFilter === 'in-progress' ? 'In Progress' : statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}</span>
+          </button>
+
+          {filterOpen && (
+            <div className="absolute right-0 mt-2 w-44 py-1.5 rounded-xl border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-800 shadow-xl z-50">
+              {[
+                { value: 'all', label: 'All' },
+                { value: 'pending', label: 'Pending' },
+                { value: 'in-progress', label: 'In Progress' },
+                { value: 'resolved', label: 'Resolved' },
+                { value: 'rejected', label: 'Rejected' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => {
+                    setStatusFilter(opt.value);
+                    setFilterOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer
+                    ${statusFilter === opt.value
+                      ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 font-medium'
+                      : 'text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
+                    }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

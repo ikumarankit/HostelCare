@@ -49,8 +49,8 @@ export default function StudentDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Welcome, {user.name?.split(' ')[0]}! 👋</h1>
-          <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">Here's your complaint overview</p>
+          <h1 className="text-2xl font-semibold text-dark-900 dark:text-white">Hi! {user.name?.toUpperCase().split(' ')[0]}</h1>
+          <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">HERE'S YOUR ALL COMPLAINT OVERVIEW</p>
         </div>
         <Link to="/student/create-complaint">
           <Button icon={HiOutlinePlusCircle}>New Complaint</Button>
@@ -59,16 +59,16 @@ export default function StudentDashboard() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={HiOutlineClipboardDocumentList} label="Total Complaints" value={total} color="primary" trend="+2 this week" trendUp />
+        <StatCard icon={HiOutlineClipboardDocumentList} label="Total Complaints" value={total} color="primary" />
         <StatCard icon={HiOutlineClock} label="Pending" value={pending} color="warning" />
-        <StatCard icon={HiOutlineExclamationTriangle} label="In Progress" value={inProgress} color="purple" />
-        <StatCard icon={HiOutlineCheckCircle} label="Resolved" value={resolved} color="success" trend="33% rate" trendUp />
+        <StatCard icon={HiOutlineExclamationTriangle} label="In Progress" value={inProgress} color="warning" />
+        <StatCard icon={HiOutlineCheckCircle} label="Resolved" value={resolved} color="success"/>
       </div>
 
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Chart */}
         <Card className="lg:col-span-2">
-          <CardHeader title="Complaint Status" subtitle="Overview of your complaints" />
+          <CardHeader title="Complaint Status" subtitle="Overview of complaints" />
           <div className="p-5 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} barSize={40}>
@@ -91,14 +91,14 @@ export default function StudentDashboard() {
           />
           <div className="divide-y divide-dark-200 dark:divide-dark-700">
             {recentComplaints.length === 0 ? (
-              <div className="p-8 text-center text-sm text-dark-400">No complaints yet. Create one!</div>
+              <div className="p-8 text-center text-sm text-dark-400">Facing Issue. Create complaint! </div>
             ) : (
               recentComplaints.map((c) => (
                 <div key={c.id} className="flex items-center gap-4 p-4 hover:bg-dark-50 dark:hover:bg-dark-700/30 transition-colors">
                   <div className="text-2xl">{getCategoryIcon(c.category)}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-dark-900 dark:text-white truncate">{c.title}</p>
-                    <p className="text-xs text-dark-500 dark:text-dark-400 mt-0.5">{c.id} · Room {c.room} · {timeAgo(c.createdAt)}</p>
+                    <p className="text-xs text-dark-500 dark:text-dark-400 mt-0.5">{c.id} · {timeAgo(c.createdAt)}</p>
                   </div>
                   <StatusBadge status={c.status} />
                 </div>

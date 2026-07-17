@@ -53,6 +53,11 @@ export const complaintService = {
       method: 'PATCH',
       body: { status, notes },
     }),
+
+  delete: async (id) =>
+    request(`/complaints/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    }),
 };
 
 // ── User Services ──

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { complaintService } from '../../services/api';
 import { Card } from '../../components/ui/Card';
@@ -7,7 +7,7 @@ import Modal from '../../components/ui/Modal';
 import { PageLoader } from '../../components/ui/Loader';
 import EmptyState from '../../components/ui/EmptyState';
 import { formatDate, formatDateTime, getCategoryIcon, getCategoryLabel } from '../../utils/helpers';
-import { HiOutlineMagnifyingGlass, HiOutlineFunnel } from 'react-icons/hi2';
+import { HiOutlineMagnifyingGlass, HiOutlineFunnel, HiOutlineTrash } from 'react-icons/hi2';
 
 export default function ComplaintHistory() {
   const { user } = useAuth();
@@ -16,6 +16,10 @@ export default function ComplaintHistory() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedComplaint, setSelectedComplaint] = useState(null);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const filterRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,7 +35,40 @@ export default function ComplaintHistory() {
     fetchData();
   }, [user.id]);
 
+  // Close filter dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleDelete = async (complaintId) => {
+    setDeleting(true);
+    try {
+      await complaintService.delete(complaintId);
+      setComplaints((prev) => prev.filter((c) => c.id !== complaintId));
+      setDeleteConfirm(null);
+      setSelectedComplaint(null);
+    } catch (err) {
+      alert(err.message || 'Failed to delete complaint');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) return <PageLoader />;
+
+  const filterOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'in-progress', label: 'In Progress' },
+    { value: 'resolved', label: 'Resolved' },
+    { value: 'rejected', label: 'Rejected' },
+  ];
 
   const filtered = complaints.filter((c) => {
     const matchSearch = c.title.toLowerCase().includes(search.toLowerCase()) || c.id.toLowerCase().includes(search.toLowerCase());
@@ -42,11 +79,11 @@ export default function ComplaintHistory() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Complaint History</h1>
-        <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">View and track all your reported issues</p>
+        <h1 className="text-2xl font-semibold text-dark-900 dark:text-white">COMPLAINT HISTORY</h1>
+        <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">View and track all reported issues</p>
       </div>
 
-      {/* Filters */}
+      {/* Search + Filter */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <HiOutlineMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-400" />
@@ -58,21 +95,41 @@ export default function ComplaintHistory() {
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-dark-300 dark:border-dark-600 bg-white dark:bg-dark-800 text-sm text-dark-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500 transition-all"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <HiOutlineFunnel className="w-4 h-4 text-dark-400" />
-          {['all', 'pending', 'in-progress', 'resolved', 'rejected'].map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatusFilter(s)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer capitalize
-                ${statusFilter === s
-                  ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                  : 'text-dark-500 hover:bg-dark-100 dark:hover:bg-dark-700'
-                }`}
-            >
-              {s === 'all' ? 'All' : s === 'in-progress' ? 'In Progress' : s}
-            </button>
-          ))}
+
+        {/* Filter Dropdown */}
+        <div className="relative" ref={filterRef}>
+          <button
+            onClick={() => setFilterOpen((prev) => !prev)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all cursor-pointer
+              ${statusFilter !== 'all'
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-500/50'
+                : 'border-dark-300 dark:border-dark-600 text-dark-500 dark:text-dark-400 hover:bg-dark-50 dark:hover:bg-dark-700'
+              }`}
+          >
+            <HiOutlineFunnel className="w-4 h-4" />
+            <span>{filterOptions.find((f) => f.value === statusFilter)?.label || 'Filter'}</span>
+          </button>
+
+          {filterOpen && (
+            <div className="absolute right-0 mt-2 w-44 py-1.5 rounded-xl border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-800 shadow-xl z-50 animate-in fade-in slide-in-from-top-2">
+              {filterOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => {
+                    setStatusFilter(opt.value);
+                    setFilterOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer
+                    ${statusFilter === opt.value
+                      ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 font-medium'
+                      : 'text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
+                    }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -82,16 +139,30 @@ export default function ComplaintHistory() {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((c) => (
-            <Card key={c.id} hover className="cursor-pointer" onClick={() => setSelectedComplaint(c)}>
+            <Card key={c.id} hover className="cursor-pointer relative group" onClick={() => setSelectedComplaint(c)}>
               <div className="p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div className="text-2xl">{getCategoryIcon(c.category)}</div>
-                  <StatusBadge status={c.status} />
+                  <div className="flex items-center gap-2">
+                    <StatusBadge status={c.status} />
+                    {c.status === 'pending' && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteConfirm(c);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-dark-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all cursor-pointer"
+                        title="Delete complaint"
+                      >
+                        <HiOutlineTrash className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <h3 className="text-sm font-semibold text-dark-900 dark:text-white mb-1 line-clamp-1">{c.title}</h3>
                 <p className="text-xs text-dark-500 dark:text-dark-400 line-clamp-2 mb-3">{c.description}</p>
                 <div className="flex items-center justify-between pt-3 border-t border-dark-200 dark:border-dark-700">
-                  <span className="text-xs text-dark-400">{c.id} · Room {c.room}</span>
+                  <span className="text-xs text-dark-400">{c.id} · {formatDate(c.createdAt)}</span>
                   <PriorityBadge priority={c.priority} />
                 </div>
               </div>
@@ -109,7 +180,18 @@ export default function ComplaintHistory() {
                 <p className="text-xs text-dark-400 font-medium">{selectedComplaint.id}</p>
                 <h3 className="text-lg font-semibold text-dark-900 dark:text-white mt-1">{selectedComplaint.title}</h3>
               </div>
-              <StatusBadge status={selectedComplaint.status} />
+              <div className="flex items-center gap-2">
+                <StatusBadge status={selectedComplaint.status} />
+                {selectedComplaint.status === 'pending' && (
+                  <button
+                    onClick={() => setDeleteConfirm(selectedComplaint)}
+                    className="p-2 rounded-lg text-dark-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all cursor-pointer"
+                    title="Delete complaint"
+                  >
+                    <HiOutlineTrash className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -139,6 +221,34 @@ export default function ComplaintHistory() {
                 <p className="text-sm text-dark-600 dark:text-dark-300">{selectedComplaint.notes}</p>
               </div>
             )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal isOpen={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} title="Delete Complaint" size="sm">
+        {deleteConfirm && (
+          <div className="space-y-4">
+            <p className="text-sm text-dark-600 dark:text-dark-300">
+              Are you sure you want to delete complaint <span className="font-semibold text-dark-900 dark:text-white">{deleteConfirm.id}</span>?
+              This action cannot be undone.
+            </p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="px-4 py-2 text-sm font-medium rounded-lg border border-dark-300 dark:border-dark-600 text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700 transition-all cursor-pointer"
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete(deleteConfirm.id)}
+                disabled={deleting}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-all cursor-pointer disabled:opacity-50"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
           </div>
         )}
       </Modal>

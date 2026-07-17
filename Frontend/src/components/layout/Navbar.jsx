@@ -7,6 +7,7 @@ import { timeAgo } from '../../utils/helpers';
 import {
   HiOutlineBars3, HiOutlineBell, HiOutlineSun, HiOutlineMoon,
   HiOutlineMagnifyingGlass, HiOutlineArrowRightOnRectangle, HiOutlineUser,
+  HiOutlineCheckCircle,
 } from 'react-icons/hi2';
 
 export default function Navbar({ onMenuClick }) {
@@ -34,6 +35,15 @@ export default function Navbar({ onMenuClick }) {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
+
+  const handleMarkAllRead = async () => {
+    try {
+      await notificationService.markAllRead();
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    } catch (err) {
+      console.error('Failed to mark notifications as read', err);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -71,8 +81,17 @@ export default function Navbar({ onMenuClick }) {
             </button>
             {showNotifications && (
               <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-dark-800 rounded-2xl shadow-2xl border border-dark-200 dark:border-dark-700 animate-scale-in overflow-hidden">
-                <div className="p-4 border-b border-dark-200 dark:border-dark-700">
+                <div className="p-4 border-b border-dark-200 dark:border-dark-700 flex items-center justify-between">
                   <h3 className="font-semibold text-dark-900 dark:text-white">Notifications</h3>
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={handleMarkAllRead}
+                      className="flex items-center gap-1 text-xs font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors cursor-pointer"
+                    >
+                      <HiOutlineCheckCircle className="w-3.5 h-3.5" />
+                      Mark all read
+                    </button>
+                  )}
                 </div>
                 <div className="max-h-64 overflow-y-auto">
                   {notifications.length === 0 ? (
@@ -96,12 +115,12 @@ export default function Navbar({ onMenuClick }) {
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-bold text-xs">
                 {user?.name?.charAt(0) || 'U'}
               </div>
-              <span className="hidden md:block text-sm font-medium text-dark-700 dark:text-dark-300">{user?.name?.split(' ')[0]}</span>
+              <span className="hidden md:block text-sm font-medium text-dark-700 dark:text-dark-300">{user?.name?.toUpperCase().split(' ')[0]}</span>
             </button>
             {showDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-800 rounded-2xl shadow-2xl border border-dark-200 dark:border-dark-700 animate-scale-in overflow-hidden">
                 <div className="p-3 border-b border-dark-200 dark:border-dark-700">
-                  <p className="text-sm font-semibold text-dark-900 dark:text-white">{user?.name}</p>
+                  <p className="text-sm font-semibold text-dark-900 dark:text-white">{user?.name.toUpperCase()}</p>
                   <p className="text-xs text-dark-500 capitalize">{user?.role}</p>
                 </div>
                 <div className="p-1.5">
