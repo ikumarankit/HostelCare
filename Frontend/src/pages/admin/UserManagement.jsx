@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { userService } from '../../services/api';
 import { Card } from '../../components/ui/Card';
 import { RoleBadge } from '../../components/ui/Badge';
@@ -9,7 +9,7 @@ import { PageLoader } from '../../components/ui/Loader';
 import EmptyState from '../../components/ui/EmptyState';
 import toast from 'react-hot-toast';
 import { formatDate } from '../../utils/helpers';
-import { HiOutlineMagnifyingGlass, HiOutlinePlusCircle, HiOutlinePencilSquare, HiOutlineEnvelope, HiOutlinePhone, HiOutlineBuildingOffice } from 'react-icons/hi2';
+import { HiOutlineMagnifyingGlass, HiOutlineFunnel, HiOutlinePlusCircle, HiOutlinePencilSquare, HiOutlineTrash, HiOutlineEnvelope, HiOutlinePhone, HiOutlineBuildingOffice } from 'react-icons/hi2';
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -19,6 +19,10 @@ export default function UserManagement() {
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [form, setForm] = useState({ name: '', email: '', role: 'student', phone: '', room: '', floor: '1', floors: [] });
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,6 +93,31 @@ export default function UserManagement() {
     }
   };
 
+  const handleDelete = async (userId) => {
+    setDeleting(true);
+    try {
+      await userService.delete(userId);
+      setUsers((prev) => prev.filter((u) => u.id !== userId));
+      toast.success('User deleted successfully');
+      setDeleteConfirm(null);
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete user');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // Close filter dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   if (loading) return <PageLoader />;
 
   const filtered = users.filter((u) => {
@@ -101,10 +130,10 @@ export default function UserManagement() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-dark-900 dark:text-white">User Management</h1>
-          <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">Manage students, wardens, and admin accounts</p>
+          <h1 className="text-2xl font-bold text-dark-900 dark:text-white">MANAGE USERS</h1>
+          <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">MANAGE STUDENTS, WARDENS AND ADMIN</p>
         </div>
-        <Button icon={HiOutlinePlusCircle} onClick={openAdd}>Add User</Button>
+        <Button icon={HiOutlinePlusCircle} onClick={openAdd}>Add New User</Button>
       </div>
 
       {/* Filters */}
@@ -114,14 +143,44 @@ export default function UserManagement() {
           <input type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-dark-300 dark:border-dark-600 bg-white dark:bg-dark-800 text-sm text-dark-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500 transition-all" />
         </div>
-        <div className="flex items-center gap-2">
-          {['all', 'student', 'warden', 'admin'].map((r) => (
-            <button key={r} onClick={() => setRoleFilter(r)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer capitalize
-                ${roleFilter === r ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400' : 'text-dark-500 hover:bg-dark-100 dark:hover:bg-dark-700'}`}>
-              {r}
-            </button>
-          ))}
+        <div className="relative" ref={filterRef}>
+          <button
+            onClick={() => setFilterOpen((prev) => !prev)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all cursor-pointer
+              ${roleFilter !== 'all'
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-500/50'
+                : 'border-dark-300 dark:border-dark-600 text-dark-500 dark:text-dark-400 hover:bg-dark-50 dark:hover:bg-dark-700'
+              }`}
+          >
+            <HiOutlineFunnel className="w-4 h-4" />
+            <span>{roleFilter === 'all' ? 'Filter' : roleFilter.charAt(0).toUpperCase() + roleFilter.slice(1)}</span>
+          </button>
+
+          {filterOpen && (
+            <div className="absolute right-0 mt-2 w-44 py-1.5 rounded-xl border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-800 shadow-xl z-50">
+              {[
+                { value: 'all', label: 'All' },
+                { value: 'student', label: 'Student' },
+                { value: 'warden', label: 'Warden' },
+                { value: 'admin', label: 'Admin' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => {
+                    setRoleFilter(opt.value);
+                    setFilterOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer
+                    ${roleFilter === opt.value
+                      ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 font-medium'
+                      : 'text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
+                    }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -160,9 +219,14 @@ export default function UserManagement() {
                     </td>
                     <td className="px-4 py-3 text-xs text-dark-400">{formatDate(u.createdAt)}</td>
                     <td className="px-4 py-3">
-                      <button onClick={() => openEdit(u)} className="p-1.5 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 text-primary-600 transition-colors cursor-pointer">
-                        <HiOutlinePencilSquare className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => openEdit(u)} title="Edit" className="p-1.5 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 text-primary-600 transition-colors cursor-pointer">
+                          <HiOutlinePencilSquare className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => setDeleteConfirm(u)} title="Delete" className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors cursor-pointer">
+                          <HiOutlineTrash className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -212,6 +276,33 @@ export default function UserManagement() {
           )}
           <Button onClick={handleSave} className="w-full">{editUser ? 'Save Changes' : 'Add User'}</Button>
         </div>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal isOpen={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} title="Delete User" size="sm">
+        {deleteConfirm && (
+          <div className="space-y-4">
+            <p className="text-sm text-dark-600 dark:text-dark-300">
+              Are you sure you want to delete <span className="font-semibold text-dark-900 dark:text-white">{deleteConfirm.name}</span> ({deleteConfirm.email})? This action cannot be undone.
+            </p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="px-4 py-2 text-sm font-medium rounded-lg border border-dark-300 dark:border-dark-600 text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700 transition-all cursor-pointer"
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete(deleteConfirm.id)}
+                disabled={deleting}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-all cursor-pointer disabled:opacity-50"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

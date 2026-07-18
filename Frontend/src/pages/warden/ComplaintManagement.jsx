@@ -91,10 +91,10 @@ export default function ComplaintManagement() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Complaint Management</h1>
+        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">COMPLAINT MANAGEMENT</h1>
         <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">
           {user?.role === 'warden' && user?.floors?.length > 0
-            ? `Managing complaints for Floor${user.floors.length > 1 ? 's' : ''} ${user.floors.sort((a, b) => a - b).join(', ')}`
+            ? `YOU ARE MANAGING COMPLAINTS FOR FLOOR${user.floors.length > 1 ? 'S' : ''} ${user.floors.sort((a, b) => a - b).join(', ')}`
             : 'View, update, and manage all complaints'}
         </p>
       </div>

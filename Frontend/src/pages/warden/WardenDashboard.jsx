@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { complaintService, analyticsService } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import { StatCard, Card, CardHeader } from '../../components/ui/Card';
 import { StatusBadge, PriorityBadge } from '../../components/ui/Badge';
 import { PageLoader } from '../../components/ui/Loader';
@@ -7,6 +9,8 @@ import { getCategoryIcon, timeAgo } from '../../utils/helpers';
 import { HiOutlineClipboardDocumentList, HiOutlineClock, HiOutlineCheckCircle, HiOutlineExclamationTriangle } from 'react-icons/hi2';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 export default function WardenDashboard() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [complaints, setComplaints] = useState([]);
   const [floorWiseData, setFloorWiseData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +23,15 @@ export default function WardenDashboard() {
           analyticsService.get(),
         ]);
         setComplaints(data);
-        setFloorWiseData(analytics.floorWiseData || []);
+
+        // Filter floor-wise data to only show warden's assigned floors
+        const allFloorData = analytics.floorWiseData || [];
+        if (user?.floors?.length > 0) {
+          const assignedFloorLabels = user.floors.map((f) => `Floor ${f}`);
+          setFloorWiseData(allFloorData.filter((d) => assignedFloorLabels.includes(d.floor)));
+        } else {
+          setFloorWiseData(allFloorData);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -27,7 +39,7 @@ export default function WardenDashboard() {
       }
     };
     fetchData();
-  }, []);
+  }, [user]);
 
   if (loading) return <PageLoader />;
 
@@ -41,21 +53,21 @@ export default function WardenDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Warden Dashboard</h1>
-        <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">Overview of all hostel complaints</p>
+        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">DASHBOARD</h1>
+        <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">OVERVIEW OF YOUR ASSIGNED FLOOR COMPLAINTS</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={HiOutlineClipboardDocumentList} label="Total Complaints" value={total} color="primary" />
         <StatCard icon={HiOutlineClock} label="Pending" value={pending} color="warning" trend={`${pending} need attention`} />
-        <StatCard icon={HiOutlineExclamationTriangle} label="In Progress" value={inProgress} color="purple" />
+        <StatCard icon={HiOutlineExclamationTriangle} label="In Progress" value={inProgress} color="warning" />
         <StatCard icon={HiOutlineCheckCircle} label="Resolved" value={resolved} color="success" trend={total ? `${Math.round((resolved / total) * 100)}% rate` : '0%'} trendUp />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Floor-wise Chart */}
         <Card>
-          <CardHeader title="Floor-wise Complaints" subtitle="Distribution across floors" />
+          <CardHeader title="YOUR ASSIGNED FLOOR COMPLAINTS CHART" subtitle={user?.floors?.length > 0 ? `Floor${user.floors.length > 1 ? 's' : ''} ${user.floors.sort((a, b) => a - b).join(', ')}` : 'Distribution across floors'} />
           <div className="p-5 h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={floorWiseData} barSize={24}>
@@ -74,10 +86,10 @@ export default function WardenDashboard() {
 
         {/* Recent Complaints */}
         <Card>
-          <CardHeader title="Recent Complaints" subtitle="Latest reported issues" />
+          <CardHeader title="RECENT COMPLAINTS" subtitle="Latest reported issues" />
           <div className="divide-y divide-dark-200 dark:divide-dark-700 max-h-80 overflow-y-auto">
             {recentComplaints.map((c) => (
-              <div key={c.id} className="flex items-center gap-3 p-4 hover:bg-dark-50 dark:hover:bg-dark-700/30 transition-colors">
+              <div key={c.id} onClick={() => navigate('/warden/complaints')} className="flex items-center gap-3 p-4 hover:bg-dark-50 dark:hover:bg-dark-700/30 transition-colors cursor-pointer">
                 <div className="text-xl">{getCategoryIcon(c.category)}</div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-dark-900 dark:text-white truncate">{c.title}</p>

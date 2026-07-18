@@ -45,8 +45,8 @@ export default function ComplaintAnalytics() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Complaint Analytics</h1>
-        <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">Detailed analytics and insights across all complaints</p>
+        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">COMPLAINTS ANALYSIS</h1>
+        <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">Detailed analytics and insights across all floor complaints</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

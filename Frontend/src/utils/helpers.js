@@ -1,11 +1,11 @@
 // Category options for complaints
 export const COMPLAINT_CATEGORIES = [
-  { value: 'electricity', label: 'Electricity', icon: '⚡' },
-  { value: 'furniture', label: 'Furniture', icon: '🪑' },
-  { value: 'cleaning', label: 'Cleaning', icon: '🧹' },
-  { value: 'water', label: 'Water Leakage', icon: '💧' },
-  { value: 'wifi', label: 'WiFi Issues', icon: '📶' },
-  { value: 'washroom', label: 'Washroom', icon: '🚿' },
+  { value: 'electricity', label: 'Electricity'},
+  { value: 'furniture', label: 'Furniture'},
+  { value: 'cleaning', label: 'Cleaning'},
+  { value: 'water', label: 'Water Leakage'},
+  { value: 'wifi', label: 'WiFi Issues'},
+  { value: 'washroom', label: 'Washroom'},
 ];
 
 export const PRIORITY_LEVELS = [

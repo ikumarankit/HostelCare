@@ -4,7 +4,7 @@ import { StatCard, Card, CardHeader } from '../../components/ui/Card';
 import { StatusBadge } from '../../components/ui/Badge';
 import { PageLoader } from '../../components/ui/Loader';
 import { getCategoryIcon, timeAgo } from '../../utils/helpers';
-import { HiOutlineClipboardDocumentList, HiOutlineUsers, HiOutlineBuildingOffice2, HiOutlineCheckBadge } from 'react-icons/hi2';
+import { HiOutlineClipboardDocumentList, HiOutlineUsers, HiOutlineExclamationTriangle, HiOutlineCheckBadge } from 'react-icons/hi2';
 import { PieChart, Pie, Cell, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function AdminDashboard() {
@@ -38,19 +38,20 @@ export default function AdminDashboard() {
   const totalStudents = users.filter((u) => u.role === 'student').length;
   const totalWardens = users.filter((u) => u.role === 'warden').length;
   const resolved = complaints.filter((c) => c.status === 'resolved').length;
+  const pendingTotal = complaints.filter((c) => c.status === 'pending').length;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Admin Dashboard</h1>
-        <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">System-wide overview and analytics</p>
+        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">DASHBOARD</h1>
+        <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">ALL FLOOR COMPLAINTS OVERVIEW AND ANALYTICS</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={HiOutlineUsers} label="Total Users" value={users.length} color="primary" />
         <StatCard icon={HiOutlineClipboardDocumentList} label="Total Complaints" value={complaints.length} color="warning" />
         <StatCard icon={HiOutlineCheckBadge} label="Resolved" value={resolved} color="success" trend={complaints.length ? `${Math.round((resolved / complaints.length) * 100)}%` : '0%'} trendUp />
-        <StatCard icon={HiOutlineBuildingOffice2} label="Students" value={totalStudents} color="cyan" />
+        <StatCard icon={HiOutlineExclamationTriangle} label="Total Pending" value={pendingTotal} color="danger" trend={`${pendingTotal} need attention`} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">

@@ -26,6 +26,7 @@ import WardenProfile from '../pages/warden/WardenProfile';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import UserManagement from '../pages/admin/UserManagement';
 import ComplaintAnalytics from '../pages/admin/ComplaintAnalytics';
+import AdminProfile from '../pages/admin/AdminProfile';
 
 export default function AppRouter() {
   const { isAuthenticated, user } = useAuth();
@@ -63,6 +64,7 @@ export default function AppRouter() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/analytics" element={<ComplaintAnalytics />} />
+          <Route path="/admin/profile" element={<AdminProfile />} />
         </Route>
 
         {/* Fallback */}
