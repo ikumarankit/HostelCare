@@ -156,15 +156,15 @@ export default function LandingPage() {
       </section>
 
       {/* CTA or login direct page*/}
-      <section className="py-20 bg-slate-900 dark:bg-dark-900">
+      <section className="py-20 bg-slate-100 dark:bg-dark-900">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white tracking-tight mb-4">Ready to get started?</h2>
-          <p className="text-slate-400 mb-8">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">Ready to get started?</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-8">
             Log in as a student, warden, or admin —
           </p>
           <Link
             to="/login"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-500 hover:bg-primary-400 text-white font-semibold rounded-xl transition-all hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/25 transition-all hover:-translate-y-0.5"
           >
             Login
             <HiOutlineArrowRight className="w-4 h-4" />
